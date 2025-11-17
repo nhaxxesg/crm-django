@@ -1,8 +1,9 @@
 from __future__ import annotations
 
+import logging
+
 from drf_spectacular.utils import extend_schema
 from rest_framework import generics, permissions, status
-from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.serializers import TokenRefreshSerializer
 
@@ -10,12 +11,21 @@ from common.responses import success_response
 from common.schemas import parse_schema
 
 from .schemas import LoginSchema, RegisterSchema
-from .serializers import UserSerializer
+from .serializers import (
+    LoginRequestSerializer,
+    RefreshRequestSerializer,
+    RegisterRequestSerializer,
+    UserSerializer,
+)
 from .services import AuthService
 from .models import User
 
 
-@extend_schema(tags=["Autenticación"])
+@extend_schema(
+    tags=["Autenticación"],
+    request=RegisterRequestSerializer,
+    responses=UserSerializer,
+)
 class RegisterView(APIView):
     permission_classes = [permissions.IsAdminUser]
 
@@ -30,20 +40,38 @@ class RegisterView(APIView):
         )
 
 
-@extend_schema(tags=["Autenticación"])
+logger = logging.getLogger(__name__)
+
+
+@extend_schema(
+    tags=["Autenticación"],
+    request=LoginRequestSerializer,
+    responses=UserSerializer,
+)
 class LoginView(APIView):
     permission_classes = [permissions.AllowAny]
     throttle_scope = "login"
 
     def post(self, request, *args, **kwargs):
-        payload = parse_schema(LoginSchema, request.data)
-        user, tokens = AuthService.authenticate_user(payload["username"], payload["password"])
-        serializer = UserSerializer(user)
-        data = {"access": tokens["access"], "refresh": tokens["refresh"], "user": serializer.data}
-        return success_response(data, message="Login exitoso")
+        try:
+            payload = parse_schema(LoginSchema, request.data)
+            username = payload["username"]
+            logger.info("Intento de login", extra={"username": username})
+            user, tokens = AuthService.authenticate_user(username, payload["password"])
+            serializer = UserSerializer(user)
+            data = {"access": tokens["access"], "refresh": tokens["refresh"], "user": serializer.data}
+            logger.info("Login exitoso", extra={"username": username, "user_id": user.id})
+            return success_response(data, message="Login exitoso")
+        except Exception:
+            logger.exception("Error durante login", extra={"username": request.data.get("username", "desconocido")})
+            raise
 
 
-@extend_schema(tags=["Autenticación"])
+@extend_schema(
+    tags=["Autenticación"],
+    request=RefreshRequestSerializer,
+    responses=RefreshRequestSerializer,
+)
 class RefreshTokenView(APIView):
     permission_classes = [permissions.AllowAny]
 

@@ -20,4 +20,22 @@ class UserSerializer(serializers.ModelSerializer):
         read_only_fields = ["id", "fecha_creacion"]
 
 
+class RegisterRequestSerializer(serializers.Serializer):
+    nombre_completo = serializers.CharField(min_length=3, max_length=100)
+    username = serializers.CharField(min_length=3, max_length=30)
+    email = serializers.EmailField()
+    password = serializers.CharField(min_length=6)
+    password_confirm = serializers.CharField(min_length=6)
+    tipo = serializers.ChoiceField(choices=["admin", "regular"])
+
+
+class LoginRequestSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    password = serializers.CharField()
+
+
+class RefreshRequestSerializer(serializers.Serializer):
+    refresh = serializers.CharField()
+
+
 
