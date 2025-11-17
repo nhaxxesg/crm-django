@@ -1,0 +1,171 @@
+@startuml CRM Database ER Diagram
+
+' Configuración del diagrama
+skinparam linetype ortho
+skinparam packageStyle rectangle
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+
+' ===== ENTIDADES =====
+
+entity "Usuario" as usuario {
+  * **id** : INT <<PK>>
+  --
+  * username : VARCHAR(30) <<UNIQUE>>
+  * password_hash : VARCHAR(255)
+  * nombre_completo : VARCHAR(150)
+  * email : VARCHAR(255) <<UNIQUE>>
+  * tipo : ENUM('admin', 'regular')
+  * activo : BOOLEAN
+  * fecha_creacion : DATETIME
+}
+
+entity "Empresa" as empresa {
+  * **id** : INT <<PK>>
+  --
+  * nombre : VARCHAR(200) <<UNIQUE>>
+  industria : ENUM('tecnologia', 'servicios', 'manufactura', 'comercio', 'salud', 'educacion', 'otros')
+  num_empleados : INT
+  sitio_web : VARCHAR(200)
+  telefono : VARCHAR(20)
+  direccion : VARCHAR(300)
+  notas : TEXT
+  * fecha_creacion : DATETIME
+}
+
+entity "Cliente" as cliente {
+  * **id** : INT <<PK>>
+  --
+  * nombre_completo : VARCHAR(150)
+  * **empresa_id** : INT <<FK>>
+  cargo : VARCHAR(100)
+  * telefono : VARCHAR(20)
+  * email : VARCHAR(255)
+  direccion : VARCHAR(300)
+  notas : TEXT
+  * fecha_creacion : DATETIME
+}
+
+entity "Oportunidad" as oportunidad {
+  * **id** : INT <<PK>>
+  --
+  * nombre : VARCHAR(200)
+  * **cliente_id** : INT <<FK>>
+  * **empresa_id** : INT <<FK>>
+  * valor : DECIMAL(12, 2)
+  * moneda : CHAR(3)
+  * probabilidad : INT
+  * fecha_cierre_estimada : DATE
+  * etapa : ENUM('prospeccion', 'calificacion', 'propuesta', 'negociacion', 'cerrado_ganado', 'cerrado_perdido')
+  * estado : ENUM('abierta', 'cerrada')
+  resultado : ENUM('ganada', 'perdida')
+  notas : TEXT
+  * fecha_creacion : DATETIME
+  fecha_cierre_real : DATETIME
+}
+
+entity "Actividad" as actividad {
+  * **id** : INT <<PK>>
+  --
+  * tipo : ENUM('llamada', 'reunion', 'email', 'tarea')
+  * asunto : VARCHAR(200)
+  descripcion : TEXT
+  * fecha_hora : DATETIME
+  * estado : ENUM('pendiente', 'completada', 'cancelada')
+  **cliente_id** : INT <<FK>>
+  **oportunidad_id** : INT <<FK>>
+  * **usuario_id** : INT <<FK>>
+  resultado : TEXT
+  * fecha_creacion : DATETIME
+}
+
+' ===== RELACIONES =====
+
+' Empresa -> Cliente (1:N)
+empresa ||--o{ cliente : "tiene"
+
+' Empresa -> Oportunidad (1:N)
+empresa ||--o{ oportunidad : "tiene"
+
+' Cliente -> Oportunidad (1:N)
+cliente ||--o{ oportunidad : "genera"
+
+' Cliente -> Actividad (1:N, opcional)
+cliente ||--o{ actividad : "relacionado con"
+
+' Oportunidad -> Actividad (1:N, opcional)
+oportunidad ||--o{ actividad : "tiene"
+
+' Usuario -> Actividad (1:N)
+usuario ||--o{ actividad : "crea/realiza"
+
+' ===== NOTAS ADICIONALES =====
+
+note right of empresa
+  **Tabla central de organizaciones**
+  - Nombre debe ser único
+  - Una empresa puede tener
+    múltiples clientes y oportunidades
+end note
+
+note right of cliente
+  **Contactos individuales**
+  - Cada cliente pertenece a una empresa
+  - Puede tener múltiples oportunidades
+  - empresa_id es obligatorio (PROTECT)
+end note
+
+note right of oportunidad
+  **Representan ventas potenciales**
+  - Cada oportunidad está asociada
+    a un cliente y una empresa
+  - El campo "valor_ponderado" se
+    calcula como: valor * (probabilidad/100)
+  - Cuando etapa es "cerrado_ganado"
+    o "cerrado_perdido", el estado
+    cambia automáticamente a "cerrada"
+end note
+
+note right of actividad
+  **Interacciones y tareas**
+  - cliente_id y oportunidad_id
+    son opcionales (pueden ser NULL)
+  - Una actividad puede estar
+    relacionada con cliente,
+    oportunidad, o ambos
+  - usuario_id registra quién
+    creó/realizó la actividad
+end note
+
+note right of usuario
+  **Sistema de autenticación**
+  - username y email deben ser únicos
+  - password_hash almacena contraseña
+    encriptada (nunca texto plano)
+  - tipo define permisos:
+    * admin: acceso total
+    * regular: acceso estándar
+end note
+
+' ===== LEYENDA =====
+
+legend right
+  **Convenciones del Diagrama**
+  ----
+  * = Campo obligatorio (NOT NULL)
+  **campo** = Clave primaria (PK)
+  **campo** <<FK>> = Clave foránea (FK)
+  <<UNIQUE>> = Restricción de unicidad
+  
+  **Cardinalidades:**
+  ||--o{ = Uno a Muchos (1:N)
+  
+  **Tipos de Relación:**
+  - Las líneas conectan las claves foráneas
+    con sus tablas de referencia
+  - PROTECT significa que no se puede
+    eliminar el registro padre si tiene
+    registros hijos asociados
+endlegend
+
+@enduml
