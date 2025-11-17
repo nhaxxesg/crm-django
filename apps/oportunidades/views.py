@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from django.db.models import DecimalField, ExpressionWrapper, F, Sum
+from drf_spectacular.utils import extend_schema
 from rest_framework.decorators import action
 
 from common.mixins import CSVExportMixin
@@ -14,6 +15,7 @@ from .serializers import OportunidadSerializer
 from .services import OportunidadService
 
 
+@extend_schema(tags=["Oportunidades"])
 class OportunidadViewSet(CSVExportMixin, BaseModelViewSet):
     queryset = Oportunidad.objects.select_related("cliente", "cliente__empresa", "empresa")
     serializer_class = OportunidadSerializer

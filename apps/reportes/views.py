@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from drf_spectacular.utils import extend_schema
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
@@ -10,6 +11,7 @@ from .schemas import VentasQuerySchema
 from .services import ReporteService
 
 
+@extend_schema(tags=["Reportes"])
 class DashboardView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -18,6 +20,7 @@ class DashboardView(APIView):
         return success_response(data, message="Dashboard obtenido exitosamente")
 
 
+@extend_schema(tags=["Reportes"])
 class VentasReportView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -32,6 +35,7 @@ class VentasReportView(APIView):
         return success_response(data, message="Reporte de ventas generado exitosamente")
 
 
+@extend_schema(tags=["Reportes"])
 class ConversionReportView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -40,6 +44,7 @@ class ConversionReportView(APIView):
         return success_response(data, message="Reporte de conversión generado exitosamente")
 
 
+@extend_schema(tags=["Reportes"])
 class ClientesPorEmpresaView(APIView):
     permission_classes = [IsAuthenticated]
 

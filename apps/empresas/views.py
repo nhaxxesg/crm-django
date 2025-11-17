@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from django.db.models import Count
 
+from drf_spectacular.utils import extend_schema
+
 from common.exceptions import ConstraintError
 from common.mixins import CSVExportMixin
 from common.viewsets import BaseModelViewSet
@@ -12,6 +14,7 @@ from .schemas import EmpresaCreateSchema, EmpresaUpdateSchema
 from .serializers import EmpresaDetailSerializer, EmpresaSerializer
 
 
+@extend_schema(tags=["Empresas"])
 class EmpresaViewSet(CSVExportMixin, BaseModelViewSet):
     queryset = (
         Empresa.objects.all()

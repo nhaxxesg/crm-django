@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from django.db.models import Count
+from drf_spectacular.utils import extend_schema
 
 from common.exceptions import ConstraintError
 from common.mixins import CSVExportMixin
@@ -12,6 +13,7 @@ from .schemas import ClienteCreateSchema, ClienteUpdateSchema
 from .serializers import ClienteSerializer
 
 
+@extend_schema(tags=["Clientes"])
 class ClienteViewSet(CSVExportMixin, BaseModelViewSet):
     queryset = (
         Cliente.objects.select_related("empresa")

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from drf_spectacular.utils import extend_schema
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -14,6 +15,7 @@ from .services import AuthService
 from .models import User
 
 
+@extend_schema(tags=["Autenticación"])
 class RegisterView(APIView):
     permission_classes = [permissions.IsAdminUser]
 
@@ -28,6 +30,7 @@ class RegisterView(APIView):
         )
 
 
+@extend_schema(tags=["Autenticación"])
 class LoginView(APIView):
     permission_classes = [permissions.AllowAny]
     throttle_scope = "login"
@@ -40,6 +43,7 @@ class LoginView(APIView):
         return success_response(data, message="Login exitoso")
 
 
+@extend_schema(tags=["Autenticación"])
 class RefreshTokenView(APIView):
     permission_classes = [permissions.AllowAny]
 
@@ -49,6 +53,7 @@ class RefreshTokenView(APIView):
         return success_response(serializer.validated_data, message="Token refrescado exitosamente")
 
 
+@extend_schema(tags=["Autenticación"])
 class UserListView(generics.ListAPIView):
     permission_classes = [permissions.IsAdminUser]
     serializer_class = UserSerializer

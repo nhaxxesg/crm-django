@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from drf_spectacular.utils import extend_schema
 from rest_framework.decorators import action
 
 from common.mixins import CSVExportMixin
@@ -12,6 +13,7 @@ from .schemas import ActividadCompletarSchema, ActividadCreateSchema, ActividadU
 from .serializers import ActividadSerializer
 
 
+@extend_schema(tags=["Actividades"])
 class ActividadViewSet(CSVExportMixin, BaseModelViewSet):
     queryset = Actividad.objects.select_related("cliente", "oportunidad", "usuario")
     serializer_class = ActividadSerializer
