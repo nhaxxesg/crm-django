@@ -1,56 +1,29 @@
-# ============================================
-# CRM API - Dependencias del Proyecto
-# ============================================
-# Instalar con: pip install -r requirements.txt
-
-# ============================================
-# Core Django
-# ============================================
+annotated-types==0.7.0
+asgiref==3.10.0
+attrs==25.4.0
 Django==4.2.7
-
-# ============================================
-# Django REST Framework
-# ============================================
-djangorestframework==3.16.0
-djangorestframework-simplejwt==5.5.0
-
-# ============================================
-# Validación de Datos
-# ============================================
-pydantic==2.11.9
-
-# ============================================
-# Autenticación / JWT
-# ============================================
-PyJWT==2.8.0
-
-# ============================================
-# Documentación API (Swagger/OpenAPI)
-# ============================================
-drf-spectacular==0.26.5
-
-# ============================================
-# Base de Datos
-# ============================================
-PyMySQL==1.1.2
-
-# ============================================
-# Configuración y Variables de Entorno
-# ============================================
-django-environ==0.12.0
-
-# ============================================
-# CORS (Cross-Origin Resource Sharing)
-# ============================================
 django-cors-headers==4.7.0
-
-# ============================================
-# Filtros y Búsqueda
-# ============================================
+django-environ==0.12.0
 django-filter==23.3
-
-# ============================================
-# Servidor WSGI para Producción
-# ============================================
+djangorestframework==3.16.0
+djangorestframework_simplejwt==5.5.0
+dnspython==2.8.0
+drf-spectacular==0.26.5
+email-validator==2.3.0
 gunicorn==21.2.0
-
+idna==3.11
+inflection==0.5.1
+jsonschema==4.25.1
+jsonschema-specifications==2025.9.1
+packaging==25.0
+pydantic==2.11.9
+pydantic_core==2.33.2
+PyJWT==2.8.0
+PyMySQL==1.1.2
+PyYAML==6.0.3
+referencing==0.37.0
+rpds-py==0.29.0
+sqlparse==0.5.3
+typing-inspection==0.4.2
+typing_extensions==4.15.0
+uritemplate==4.2.0
