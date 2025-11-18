@@ -15,6 +15,10 @@ class EmpresaLiteSerializer(serializers.ModelSerializer):
 
 class ClienteSerializer(serializers.ModelSerializer):
     empresa = EmpresaLiteSerializer(read_only=True)
+    empresa_id = serializers.PrimaryKeyRelatedField(
+        queryset=Empresa.objects.all(),
+        source="empresa",
+    )
     num_oportunidades = serializers.IntegerField(read_only=True)
     num_actividades = serializers.IntegerField(read_only=True)
 

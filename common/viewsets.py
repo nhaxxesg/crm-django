@@ -17,11 +17,12 @@ class SchemaValidationMixin:
 
     schema_map: Dict[str, Type[BaseModel]] = {}
 
-    def parse_payload(self, request) -> Dict[str, Any]:
+    def parse_payload(self, request, partial: bool = False) -> Dict[str, Any]:
         schema_cls = self.schema_map.get(self.action)
         if not schema_cls:
             return request.data
-        return parse_schema(schema_cls, request.data)
+        exclude_unset = partial or self.action == "partial_update"
+        return parse_schema(schema_cls, request.data, exclude_unset=exclude_unset)
 
 
 class BaseModelViewSet(SchemaValidationMixin, viewsets.ModelViewSet):
@@ -65,7 +66,7 @@ class BaseModelViewSet(SchemaValidationMixin, viewsets.ModelViewSet):
 
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop("partial", False)
-        data = self.parse_payload(request)
+        data = self.parse_payload(request, partial=partial)
         instance = self.get_object()
         serializer = self.get_serializer(instance, data=data, partial=partial)
         serializer.is_valid(raise_exception=True)
