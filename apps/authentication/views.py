@@ -22,7 +22,7 @@ from .models import User
 
 
 @extend_schema(
-    tags=["Autenticación"],
+    tags=["Autenticacióncitaaaaaaa"],
     request=RegisterRequestSerializer,
     responses=UserSerializer,
 )
@@ -44,7 +44,7 @@ logger = logging.getLogger(__name__)
 
 
 @extend_schema(
-    tags=["Autenticación"],
+    tags=["Autenticacióncitaaaaaaa"],
     request=LoginRequestSerializer,
     responses=UserSerializer,
 )
@@ -68,7 +68,7 @@ class LoginView(APIView):
 
 
 @extend_schema(
-    tags=["Autenticación"],
+    tags=["Autenticacióncitaaaaaaa"],
     request=RefreshRequestSerializer,
     responses=RefreshRequestSerializer,
 )
@@ -81,7 +81,7 @@ class RefreshTokenView(APIView):
         return success_response(serializer.validated_data, message="Token refrescado exitosamente")
 
 
-@extend_schema(tags=["Autenticación"])
+@extend_schema(tags=["Autenticacióncitaaaaaaa"])
 class UserListView(generics.ListAPIView):
     permission_classes = [permissions.IsAdminUser]
     serializer_class = UserSerializer
