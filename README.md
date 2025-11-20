@@ -1,4 +1,4 @@
-## Contrato de la API CRM
+## Contrato de la API CRM (Editado)
 
 ### 1. Autenticación (`/api/v1/auth/`)
 
